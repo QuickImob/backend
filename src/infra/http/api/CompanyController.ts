@@ -44,7 +44,7 @@ export default class CompanyController {
                 user.id || ''
             )
 
-            const createdUser: any = await userRepository.createUser(user);*/
+            const createdUser: any = await userRepository.createUser(user);  */
 
             return {
                 body: "createdUser",
