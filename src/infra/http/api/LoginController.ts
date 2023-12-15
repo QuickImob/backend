@@ -3,6 +3,10 @@ import {Request, Response} from 'express';
 import User from "../../../domain/entity/User";
 import UserRepositoryPrisma from "../../../repository/prisma/UserRepositoryPrisma";
 import {prisma} from "../../database/client";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export default class LoginController {
     private static noAuth = (req: any, res: any, next: any) => {
@@ -23,8 +27,16 @@ export default class LoginController {
                 }
             }
 
+            const secret: string = process.env.SECRET || '';
+            const token: any = jwt.sign({
+                user: user
+            }, secret, {expiresIn: '1h'})
+
             return {
-                body: user,
+                body: {
+                    user_id: user.id,
+                    token: token
+                },
                 status: 200
             }
         }, this.noAuth);

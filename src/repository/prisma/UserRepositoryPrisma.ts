@@ -35,4 +35,10 @@ export default class UserRepositoryPrisma {
 
         return user;
     }
+
+    async retrieveUsers(): Promise<any> {
+        const user: any = await this.prisma.user.findMany();
+
+        return user;
+    }
 }

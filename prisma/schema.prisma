@@ -28,7 +28,7 @@ model User {
 model User_Adress {
   id         String @id @default(uuid())
   street     String
-  steet_n    String
+  street_n   String
   complement String
   district   String
   city       String
