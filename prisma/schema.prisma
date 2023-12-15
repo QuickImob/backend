@@ -51,7 +51,7 @@ model Company {
   profile_image String
   phone         String
   email         String
-  tipo          String
+  type          String
   user_id       String
   created_at    DateTime @default(now())
   updated_at    DateTime @updatedAt
