@@ -47,7 +47,7 @@ export default class CompanyController {
             const createdUser: any = await userRepository.createUser(user);  */
 
             return {
-                body: "createdUser",
+                body: "createdUser  ",
                 status: 200
             }
         }, this.noAuth);
