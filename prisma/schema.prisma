@@ -13,20 +13,22 @@ enum User_Type {
 }
 
 model User {
-  id            String        @id @default(uuid())
+  id            String       @id @default(uuid())
   name          String
-  email         String        @unique
+  email         String       @unique
   phone         String
   profile_image String
-  type          User_Type     @default(USER)
+  type          User_Type    @default(USER)
   password      String
-  created_at    DateTime      @default(now())
-  updated_at    DateTime      @updatedAt
-  User_Adress   User_Adress[]
+  created_at    DateTime     @default(now())
+  updated_at    DateTime     @updatedAt
+  User_Adress   User_Adress?
+  Company       Company?
+  Property      Property?
 }
 
 model User_Adress {
-  id         String @id @default(uuid())
+  id         String   @id @default(uuid())
   street     String
   street_n   String
   complement String
@@ -36,7 +38,56 @@ model User_Adress {
   country    String
   zip_code   String
   user_id    String
-  User       User?  @relation(fields: [user_id], references: [id])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  User       User?    @relation(fields: [user_id], references: [id])
+
+  @@unique([user_id])
+}
+
+model Company {
+  id            String   @id @default(uuid())
+  name          String
+  profile_image String
+  phone         String
+  email         String
+  tipo          String
+  user_id       String
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+  User          User?    @relation(fields: [user_id], references: [id])
+
+  @@unique([user_id])
+}
+
+model Property {
+  id                    String   @id @default(uuid())
+  id_extern             String?
+  title                 String
+  description           String
+  type                  String
+  property_registration String?
+  condominium           Decimal? @db.Decimal(10, 2)
+  iptu                  Decimal? @db.Decimal(10, 2)
+  id_owner              String?
+  constructed_area      String?
+  total_area            String?
+  sell_price            Decimal? @db.Decimal(10, 2)
+  rent_price            Decimal? @db.Decimal(10, 2)
+  objective             String?
+  n_bedrooms            Int?
+  n_suites              Int?
+  n_bathrooms           Int?
+  n_parking             Int?
+  n_parking_free        Int?
+  n_washrooms           Int?
+  n_elevators           Int?
+  n_paviments           Int?
+  link_tour             String?
+  user_id               String
+  created_at            DateTime @default(now())
+  updated_at            DateTime @updatedAt
+  User                  User?    @relation(fields: [user_id], references: [id])
 
   @@unique([user_id])
 }
