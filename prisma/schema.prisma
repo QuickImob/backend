@@ -19,7 +19,7 @@ model User {
   phone         String
   profile_image String
   type          User_Type    @default(USER)
-  perso_type    String
+  perso_type    String?
   password      String
   created_at    DateTime     @default(now())
   updated_at    DateTime     @updatedAt
