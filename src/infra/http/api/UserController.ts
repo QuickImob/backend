@@ -17,7 +17,7 @@ export default class UserController {
             const {
                 name, email, phone, profile_image, password,
                 street, street_n, complement, district, city,
-                state, country, zip_code
+                state, country, zip_code, perso_type
             } = body.body;
 
             let userImg: string = '';
@@ -31,6 +31,7 @@ export default class UserController {
                 phone,
                 userImg,
                 password,
+                perso_type
             );
 
             await UserAddress.createUserAddress(
