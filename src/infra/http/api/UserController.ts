@@ -5,6 +5,7 @@ import UserRepositoryPrisma from "../../../repository/prisma/UserRepositoryPrism
 import {prisma} from "../../database/client";
 import MiddlewareAuth from "../../../service/MiddlewareAuth";
 import UserAddress from "../../../domain/entity/UserAddress";
+import * as console from "console";
 
 export default class UserController {
     private static noAuth = (req: any, res: any, next: any) => {
@@ -14,6 +15,7 @@ export default class UserController {
     static configureRoutes(httpServer: HttpServer) {
         httpServer.register("post", "/api/v1/users", async(params: Response, body: Request) => {
             const userRepository = new UserRepositoryPrisma(prisma);
+
             const {
                 name, email, phone, profile_image, password,
                 street, street_n, complement, district, city,

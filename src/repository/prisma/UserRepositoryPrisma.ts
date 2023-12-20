@@ -7,7 +7,7 @@ export default class UserRepositoryPrisma {
     constructor(readonly prisma: PrismaClient) {
     }
 
-    async createUser(user: User): Promise<User> {
+    async createUser(user: User): Promise<any> {
         const createdUser: any = await this.prisma.user.create({
             data: {
                 id: user.id,
@@ -20,7 +20,15 @@ export default class UserRepositoryPrisma {
             }
         });
 
-        return createdUser;
+        return {
+            id: createdUser.id,
+            name: createdUser.name,
+            email: createdUser.email,
+            phone: createdUser.phone,
+            profile_image: createdUser.profile_image,
+            perso_type: createdUser.perso_type,
+            type: createdUser.type
+        };
     }
 
     async loginUser(email: string, password: string): Promise<User | undefined> {
