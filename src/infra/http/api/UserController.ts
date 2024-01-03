@@ -5,7 +5,7 @@ import UserRepositoryPrisma from "../../../repository/prisma/UserRepositoryPrism
 import {prisma} from "../../database/client";
 import MiddlewareAuth from "../../../service/MiddlewareAuth";
 import UserAddress from "../../../domain/entity/UserAddress";
-import * as console from "console";
+import RequiredFields from "../../../helper/RequiredFields";
 
 export default class UserController {
     private static noAuth = (req: any, res: any, next: any) => {
@@ -16,11 +16,31 @@ export default class UserController {
         httpServer.register("post", "/api/v1/users", async(params: Response, body: Request) => {
             const userRepository = new UserRepositoryPrisma(prisma);
 
+            const fields: string[] = ["name", "email", "phone", "password",
+                "street", "street_n", "complement", "district", "city",
+                "state", "country", "zip_code", "perso_type"];
+
             const {
                 name, email, phone, profile_image, password,
                 street, street_n, complement, district, city,
                 state, country, zip_code, perso_type
             } = body.body;
+
+            const required: string[] = RequiredFields.validate(fields, body.body);
+            if(required.length > 0){
+                return {
+                    body: required,
+                    status: 422
+                }
+            }
+
+            const existUser: any = await userRepository.retrieveUser(email);
+            if(existUser){
+                return {
+                    body: "User already exists",
+                    status: 400
+                }
+            }
 
             let userImg: string = '';
             if(profile_image){

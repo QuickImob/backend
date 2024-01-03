@@ -4,6 +4,7 @@ import {prisma} from "../../database/client";
 import MiddlewareAuth from "../../../service/MiddlewareAuth";
 import CompanyRepositoryPrisma from "../../../repository/prisma/CompanyRepositoryPrisma";
 import Company from "../../../domain/entity/Company";
+import RequiredFields from "../../../helper/RequiredFields";
 
 export default class CompanyController {
     private static noAuth = (req: any, res: any, next: any) => {
@@ -15,6 +16,23 @@ export default class CompanyController {
             const companyRepository = new CompanyRepositoryPrisma(prisma);
 
             const { name, email, phone, profile_image, type, user_id } = body.body;
+            const fields: string[] = ["name", "email", "phone", "type", "user_id"];
+
+            const required: string[] = RequiredFields.validate(fields, body.body);
+            if(required.length > 0){
+                return {
+                    body: required,
+                    status: 422
+                }
+            }
+
+            const existComp: any = await companyRepository.retrieveCompany(email);
+            if(existComp){
+                return {
+                    body: "Company already exists",
+                    status: 400
+                }
+            }
 
             let compImg: string = '';
             if(profile_image){

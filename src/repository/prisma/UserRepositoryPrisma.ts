@@ -50,4 +50,14 @@ export default class UserRepositoryPrisma {
 
         return user;
     }
+
+    async retrieveUser(email: string): Promise<any> {
+        const user: any = await this.prisma.user.findUnique({
+            where: {
+                email: email
+            }
+        });
+
+        return user;
+    }
 }

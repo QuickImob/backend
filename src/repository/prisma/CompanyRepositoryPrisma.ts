@@ -21,4 +21,14 @@ export default class CompanyRepositoryPrisma {
 
         return createdCompany;
     }
+
+    async retrieveCompany(email: string): Promise<Company | undefined> {
+        const company: any = await this.prisma.company.findFirst({
+            where: {
+                email: email
+            }
+        });
+
+        return company;
+    }
 }

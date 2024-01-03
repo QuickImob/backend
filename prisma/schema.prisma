@@ -7,11 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum User_Type {
-  USER
-  ADMIN
-}
-
 model User {
   id            String       @id @default(uuid())
   name          String
@@ -19,31 +14,29 @@ model User {
   phone         String
   profile_image String
   type          User_Type    @default(USER)
-  perso_type    String?
   password      String
   created_at    DateTime     @default(now())
   updated_at    DateTime     @updatedAt
-  User_Adress   User_Adress?
+  perso_type    String?
   Company       Company?
   Property      Property?
+  User_Adress   User_Adress?
 }
 
 model User_Adress {
   id         String   @id @default(uuid())
   street     String
-  street_n   String
   complement String
   district   String
   city       String
   state      String
   country    String
   zip_code   String
-  user_id    String
+  user_id    String   @unique
+  street_n   String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  User       User?    @relation(fields: [user_id], references: [id])
-
-  @@unique([user_id])
+  User       User     @relation(fields: [user_id], references: [id])
 }
 
 model Company {
@@ -52,13 +45,11 @@ model Company {
   profile_image String
   phone         String
   email         String
-  type          String
-  user_id       String
+  user_id       String   @unique
   created_at    DateTime @default(now())
   updated_at    DateTime @updatedAt
-  User          User?    @relation(fields: [user_id], references: [id])
-
-  @@unique([user_id])
+  type          String
+  User          User     @relation(fields: [user_id], references: [id])
 }
 
 model Property {
@@ -85,10 +76,13 @@ model Property {
   n_elevators           Int?
   n_paviments           Int?
   link_tour             String?
-  user_id               String
+  user_id               String   @unique
   created_at            DateTime @default(now())
   updated_at            DateTime @updatedAt
-  User                  User?    @relation(fields: [user_id], references: [id])
+  User                  User     @relation(fields: [user_id], references: [id])
+}
 
-  @@unique([user_id])
+enum User_Type {
+  USER
+  ADMIN
 }
