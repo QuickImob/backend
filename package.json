@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon ./src/main.ts",
-    "deploy": "git add . && git commit -m 'feature: deploy' && git push production production && ssh root@18.228.212.31 'rm -r /var/www/quick-imob-back/dist' && ssh root@18.228.212.31 pm2 delete main && ssh root@18.228.212.31 tsc && ssh root@18.228.212.31 pm2 start dist/main.js"
+    "deploy": "git add . && git commit -m 'feature: deploy' && git push production production"
   },
   "keywords": [],
   "author": "",
