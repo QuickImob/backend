@@ -16,7 +16,7 @@ export default class UserRepositoryPrisma {
                 phone: user.phone,
                 profile_image: user.profile_image,
                 password: user.password,
-                perso_type: user.perso_type
+                person_type: user.person_type
             }
         });
 
@@ -26,7 +26,7 @@ export default class UserRepositoryPrisma {
             email: createdUser.email,
             phone: createdUser.phone,
             profile_image: createdUser.profile_image,
-            perso_type: createdUser.perso_type,
+            person_type: createdUser.person_type,
             type: createdUser.type
         };
     }

@@ -15,7 +15,7 @@ export default class CompanyController {
         httpServer.register("post", "/api/v1/companies", async(params: Response, body: Request) => {
             const companyRepository = new CompanyRepositoryPrisma(prisma);
 
-            const { name, email, phone, profile_image, type, user_id } = body.body;
+            const { name, email, phone, profile_image, type, user_id, document, creci } = body.body;
             const fields: string[] = ["name", "email", "phone", "type", "user_id"];
 
             const required: string[] = RequiredFields.validate(fields, body.body);
@@ -48,7 +48,7 @@ export default class CompanyController {
                 user_id
             );
 
-            const createdCompany: any = await companyRepository.createCompany(company);
+            const createdCompany: any = await companyRepository.createCompany(company, document, creci);
 
             return {
                 body: createdCompany,

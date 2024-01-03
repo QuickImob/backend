@@ -8,19 +8,20 @@ datasource db {
 }
 
 model User {
-  id            String       @id @default(uuid())
+  id            String         @id @default(uuid())
   name          String
-  email         String       @unique
+  email         String         @unique
   phone         String
   profile_image String
-  type          User_Type    @default(USER)
+  type          User_Type      @default(USER)
   password      String
-  created_at    DateTime     @default(now())
-  updated_at    DateTime     @updatedAt
-  perso_type    String?
+  person_type   String?
+  created_at    DateTime       @default(now())
+  updated_at    DateTime       @updatedAt
   Company       Company?
   Property      Property?
   User_Adress   User_Adress?
+  Visited_Page  Visited_Page[]
 }
 
 model User_Adress {
@@ -40,16 +41,36 @@ model User_Adress {
 }
 
 model Company {
-  id            String   @id @default(uuid())
-  name          String
-  profile_image String
-  phone         String
-  email         String
-  user_id       String   @unique
-  created_at    DateTime @default(now())
-  updated_at    DateTime @updatedAt
-  type          String
-  User          User     @relation(fields: [user_id], references: [id])
+  id                      String                   @id @default(uuid())
+  name                    String
+  profile_image           String
+  phone                   String
+  email                   String
+  user_id                 String                   @unique
+  created_at              DateTime                 @default(now())
+  updated_at              DateTime                 @updatedAt
+  type                    String
+  User                    User                     @relation(fields: [user_id], references: [id])
+  Physical_Person_Company Physical_Person_Company?
+  Legal_Person_Company    Legal_Person_Company?
+}
+
+model Physical_Person_Company {
+  company_id String  @id
+  Company    Company @relation(fields: [company_id], references: [id])
+  cpf        String
+  creci      String
+
+  @@unique([company_id])
+}
+
+model Legal_Person_Company {
+  company_id String  @id
+  Company    Company @relation(fields: [company_id], references: [id])
+  cnpj       String
+  creci_j    String
+
+  @@unique([company_id])
 }
 
 model Property {
@@ -85,4 +106,12 @@ model Property {
 enum User_Type {
   USER
   ADMIN
+}
+
+model Visited_Page {
+  user_id   String  @id
+  dashboard Boolean @default(false)
+  User      User    @relation(fields: [user_id], references: [id])
+
+  @@unique([user_id])
 }

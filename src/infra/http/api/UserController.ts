@@ -17,13 +17,13 @@ export default class UserController {
             const userRepository = new UserRepositoryPrisma(prisma);
 
             const fields: string[] = ["name", "email", "phone", "password",
-                "street", "street_n", "complement", "district", "city",
-                "state", "country", "zip_code", "perso_type"];
+                "street", "street_n", "district", "city",
+                "state", "country", "zip_code", "person_type"];
 
             const {
                 name, email, phone, profile_image, password,
                 street, street_n, complement, district, city,
-                state, country, zip_code, perso_type
+                state, country, zip_code, person_type
             } = body.body;
 
             const required: string[] = RequiredFields.validate(fields, body.body);
@@ -53,7 +53,7 @@ export default class UserController {
                 phone,
                 userImg,
                 password,
-                perso_type
+                person_type
             );
 
             await UserAddress.createUserAddress(

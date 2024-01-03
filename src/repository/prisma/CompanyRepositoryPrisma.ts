@@ -6,7 +6,7 @@ export default class CompanyRepositoryPrisma {
     constructor(readonly prisma: PrismaClient) {
     }
 
-    async createCompany(company: Company): Promise<Company> {
+    async createCompany(company: Company, document: string, creci: string): Promise<Company> {
         const createdCompany: any = await this.prisma.company.create({
             data: {
                 id: company.id,
@@ -18,6 +18,24 @@ export default class CompanyRepositoryPrisma {
                 user_id: company.user_id
             }
         });
+
+        if(company.type === 'PF'){
+            await this.prisma.legal_Person_Company.create({
+                data: {
+                    cnpj: document,
+                    creci_j: creci,
+                    company_id: createdCompany.id
+                }
+            });
+        } else {
+            await this.prisma.physical_Person_Company.create({
+                data: {
+                    cpf: document,
+                    creci: creci,
+                    company_id: createdCompany.id
+                }
+            });
+        }
 
         return createdCompany;
     }
