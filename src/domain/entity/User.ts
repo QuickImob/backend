@@ -32,8 +32,8 @@ export default class User {
             email,
             phone,
             profile_image,
-            crypted,
-            person_type
+            person_type,
+            crypted
         );
     }
 }

@@ -52,8 +52,8 @@ export default class UserController {
                 email,
                 phone,
                 userImg,
-                password,
-                person_type
+                person_type,
+                password
             );
 
             await UserAddress.createUserAddress(
