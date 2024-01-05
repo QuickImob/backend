@@ -6,8 +6,7 @@ import {prisma} from "../../database/client";
 import MiddlewareAuth from "../../../service/MiddlewareAuth";
 import UserAddress from "../../../domain/entity/UserAddress";
 import RequiredFields from "../../../helper/RequiredFields";
-import {GetObjectCommand, HeadObjectCommand, PutObjectCommand, S3Client} from "@aws-sdk/client-s3";
-import {getSignedUrl} from "@aws-sdk/s3-request-presigner";
+import {PutObjectCommand, S3Client} from "@aws-sdk/client-s3";
 import multer from "multer";
 import bcrypt from "bcrypt";
 
@@ -56,7 +55,7 @@ export default class UserController {
                 await s3Client.send(
                     new PutObjectCommand({
                         Bucket: "quickimob",
-                        Key: profile_image.originalname,
+                        Key: "/" + email + "/" + profile_image.originalname,
                         Body: profile_image.buffer,
                     })
                 );
@@ -103,18 +102,19 @@ export default class UserController {
             }
         }, MiddlewareAuth.middlewareAuth);
 
-        httpServer.registerFile("put", "/api/v1/users/:id", upload.single("profile_image"), async(params: Response | any, body: Request) => {
+        httpServer.registerFile("put", "/api/v1/users/:email", upload.single("profile_image"), async(params: Response | any, body: Request) => {
             const s3Client = new S3Client({});
             const userRepository = new UserRepositoryPrisma(prisma);
             const profile_image: any = body.file;
-            const id: string = params.id;
+            const email: string = params.email;
+            const existUser: any = await userRepository.retrieveUser(email);
 
             let userImg: any = '';
             if(profile_image){
                 await s3Client.send(
                     new PutObjectCommand({
                         Bucket: "quickimob",
-                        Key: profile_image.originalname,
+                        Key: "/" + email + "/" + profile_image.originalname,
                         Body: profile_image.buffer,
                     })
                 );
@@ -123,14 +123,14 @@ export default class UserController {
             }
 
             const user: any = {
-                user_id: id
+                user_id: existUser.id
             };
             if(body.body.name) Object.assign(user, {name: body.body.name})
             if(body.body.phone) Object.assign(user, {phone: body.body.phone})
             if(profile_image) Object.assign(user, {profile_image: userImg})
 
             const userAddress: any = {
-                user_id: id
+                user_id: existUser.id
             };
             if(body.body.street) Object.assign(userAddress, {street: body.body.street})
             if(body.body.street_n) Object.assign(userAddress, {street_n: body.body.street_n})

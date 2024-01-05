@@ -5,6 +5,7 @@ import UserController from "./infra/http/api/UserController";
 import LoginController from "./infra/http/api/LoginController";
 import CompanyController from "./infra/http/api/CompanyController";
 import VisitedPagesController from "./infra/http/api/VisitedPagesController";
+import OwnerController from "./infra/http/api/OwnerController";
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ try {
     LoginController.configureRoutes(httpServer);
     CompanyController.configureRoutes(httpServer);
     VisitedPagesController.configureRoutes(httpServer);
+    OwnerController.configureRoutes(httpServer);
 
     httpServer.listen(3001);
 } catch (error) {

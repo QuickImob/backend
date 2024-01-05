@@ -53,6 +53,8 @@ model Company {
   User                    User                     @relation(fields: [user_id], references: [id])
   Physical_Person_Company Physical_Person_Company?
   Legal_Person_Company    Legal_Person_Company?
+  Property                Property[]
+  Owner                   Owner[]
 }
 
 model Physical_Person_Company {
@@ -82,7 +84,8 @@ model Property {
   property_registration String?
   condominium           Decimal? @db.Decimal(10, 2)
   iptu                  Decimal? @db.Decimal(10, 2)
-  id_owner              String?
+  owner_id              String
+  company_id            String
   constructed_area      String?
   total_area            String?
   sell_price            Decimal? @db.Decimal(10, 2)
@@ -101,6 +104,8 @@ model Property {
   created_at            DateTime @default(now())
   updated_at            DateTime @updatedAt
   User                  User     @relation(fields: [user_id], references: [id])
+  Company               Company  @relation(fields: [company_id], references: [id])
+  Owner                 Owner    @relation(fields: [owner_id], references: [id])
 }
 
 enum User_Type {
@@ -114,4 +119,15 @@ model Visited_Page {
   User      User    @relation(fields: [user_id], references: [id])
 
   @@unique([user_id])
+}
+
+model Owner {
+  id         String  @id @default(uuid())
+  name       String
+  email      String?
+  phone      String?
+  company_id String
+
+  Company  Company    @relation(fields: [company_id], references: [id])
+  Property Property[]
 }
