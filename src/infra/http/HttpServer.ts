@@ -1,6 +1,7 @@
-import express, { Express } from "express";
+import express, {Express, RequestHandler} from "express";
 import logger from "../service/WinstonLogger";
 import cors from 'cors';
+import multer from "multer";
 
 export default class HttpServer {
     app: any
@@ -19,6 +20,12 @@ export default class HttpServer {
         this.app[method](path, checkAuth, this.handler(handler))
     }
 
+    registerFile(method: string, path: string, upload: RequestHandler, handler: Function, checkAuth: Function): void {
+        const storage = multer.memoryStorage();
+        upload = multer({ storage }).single("profile_image");
+        this.app[method](path, upload, checkAuth, this.handler(handler))
+    }
+
     listen(port: number): void {
         this.app.listen(port, () => {
             logger.info(`Example app listening at http://localhost:${port}`)
@@ -29,7 +36,6 @@ export default class HttpServer {
         return async function (req: any, res: any) {
             try {
                 const result = await handler(req.params, req);
-
                 if (result.status && result.body) {
                     res.status(result.status).send(result.body);
                 } else {
