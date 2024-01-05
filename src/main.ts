@@ -19,7 +19,7 @@ try {
 
     httpServer.listen(3001);
 } catch (error) {
-    console.error("Error on main.ts", error)
+    console.error("Error on main.ts ", error)
     logger.error("Error on main.ts", error);
 }
 export const api = httpServer.app;
