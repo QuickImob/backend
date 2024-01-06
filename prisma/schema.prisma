@@ -55,6 +55,7 @@ model Company {
   Legal_Person_Company    Legal_Person_Company?
   Property                Property[]
   Owner                   Owner[]
+  Categories              Categories[]
 }
 
 model Physical_Person_Company {
@@ -76,20 +77,20 @@ model Legal_Person_Company {
 }
 
 model Property {
-  id                    String   @id @default(uuid())
+  id                    String     @id @default(uuid())
   id_extern             String?
   title                 String
   description           String
-  type                  String
+  category_id           String
   property_registration String?
-  condominium           Decimal? @db.Decimal(10, 2)
-  iptu                  Decimal? @db.Decimal(10, 2)
+  condominium           Decimal?   @db.Decimal(10, 2)
+  iptu                  Decimal?   @db.Decimal(10, 2)
   owner_id              String
   company_id            String
   constructed_area      String?
   total_area            String?
-  sell_price            Decimal? @db.Decimal(10, 2)
-  rent_price            Decimal? @db.Decimal(10, 2)
+  sell_price            Decimal?   @db.Decimal(10, 2)
+  rent_price            Decimal?   @db.Decimal(10, 2)
   objective             String?
   n_bedrooms            Int?
   n_suites              Int?
@@ -100,12 +101,13 @@ model Property {
   n_elevators           Int?
   n_paviments           Int?
   link_tour             String?
-  user_id               String   @unique
-  created_at            DateTime @default(now())
-  updated_at            DateTime @updatedAt
-  User                  User     @relation(fields: [user_id], references: [id])
-  Company               Company  @relation(fields: [company_id], references: [id])
-  Owner                 Owner    @relation(fields: [owner_id], references: [id])
+  user_id               String     @unique
+  created_at            DateTime   @default(now())
+  updated_at            DateTime   @updatedAt
+  User                  User       @relation(fields: [user_id], references: [id])
+  Company               Company    @relation(fields: [company_id], references: [id])
+  Owner                 Owner      @relation(fields: [owner_id], references: [id])
+  Categories            Categories @relation(fields: [category_id], references: [id])
 }
 
 enum User_Type {
@@ -114,19 +116,33 @@ enum User_Type {
 }
 
 model Visited_Page {
-  user_id   String  @id
-  dashboard Boolean @default(false)
-  User      User    @relation(fields: [user_id], references: [id])
+  user_id    String   @id
+  dashboard  Boolean  @default(false)
+  User       User     @relation(fields: [user_id], references: [id])
+  created_at DateTime @default(now())
 
   @@unique([user_id])
 }
 
 model Owner {
-  id         String  @id @default(uuid())
+  id         String   @id @default(uuid())
   name       String
   email      String?
   phone      String?
   company_id String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  Company  Company    @relation(fields: [company_id], references: [id])
+  Property Property[]
+}
+
+model Categories {
+  id         String   @id @default(uuid())
+  name       String
+  company_id String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 
   Company  Company    @relation(fields: [company_id], references: [id])
   Property Property[]

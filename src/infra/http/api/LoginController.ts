@@ -34,7 +34,7 @@ export default class LoginController {
 
             return {
                 body: {
-                    user_id: user.id,
+                    user: user,
                     token: token
                 },
                 status: 200
