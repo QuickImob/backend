@@ -3,7 +3,6 @@ import {Request, Response} from 'express';
 import {prisma} from "../../database/client";
 import MiddlewareAuth from "../../../service/MiddlewareAuth";
 import RequiredFields from "../../../helper/RequiredFields";
-import OwnerRepositoryPrisma from "../../../repository/prisma/OwnerRepositoryPrisma";
 import Property from "../../../domain/entity/Property";
 import PropertyRepositoryPrisma from "../../../repository/prisma/PropertyRepositoryPrisma";
 

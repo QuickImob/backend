@@ -108,6 +108,10 @@ export default class UserRepositoryPrisma {
         const user: any = await this.prisma.user.findUnique({
             where: {
                 email: email
+            },
+            include: {
+                User_Adress: true,
+                Company: true
             }
         });
 
