@@ -8,6 +8,8 @@ import VisitedPagesController from "./infra/http/api/VisitedPagesController";
 import OwnerController from "./infra/http/api/OwnerController";
 import CategoriesController from "./infra/http/api/CategoriesController";
 import PropertyController from "./infra/http/api/PropertyController";
+import GalleryController from "./infra/http/api/GalleryController";
+import FolderController from "./infra/http/api/FolderController";
 
 dotenv.config();
 
@@ -20,6 +22,8 @@ try {
     OwnerController.configureRoutes(httpServer);
     CategoriesController.configureRoutes(httpServer);
     PropertyController.configureRoutes(httpServer);
+    GalleryController.configureRoutes(httpServer);
+    FolderController.configureRoutes(httpServer);
 
     httpServer.listen(3001);
 } catch (error) {

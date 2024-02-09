@@ -5,27 +5,24 @@ import MiddlewareAuth from "../../../service/MiddlewareAuth";
 import RequiredFields from "../../../helper/RequiredFields";
 import Property from "../../../domain/entity/Property";
 import PropertyRepositoryPrisma from "../../../repository/prisma/PropertyRepositoryPrisma";
-import FolderRepositoryPrisma from "../../../repository/prisma/FolderRepositoryPrisma";
-import Folder from "../../../domain/entity/Folder";
-import {PutObjectCommand, S3Client} from "@aws-sdk/client-s3";
 import GalleryRepositoryPrisma from "../../../repository/prisma/GalleryRepositoryPrisma";
-import Image from "../../../domain/entity/Image";
 import multer from "multer";
+import {PutObjectCommand, S3Client} from "@aws-sdk/client-s3";
+import Image from "../../../domain/entity/Image";
 
 const storage = multer.memoryStorage();
 const upload = multer({storage});
 
-export default class PropertyController {
+export default class GalleryController {
     private static noAuth = (req: any, res: any, next: any) => {
         next()
     };
 
     static configureRoutes(httpServer: HttpServer) {
-        httpServer.register("post", "/api/v1/property", async(params: Response, body: Request) => {
-            const fields: string[] = ["title", "id_extern", "category_id", "user_id", "company_id", "owner_id"];
-            const { title, id_extern, category_id, user_id, company_id, owner_id } = body.body;
-            const propertyRepository = new PropertyRepositoryPrisma(prisma);
-            const folderRepository = new FolderRepositoryPrisma(prisma);
+        httpServer.register("post", "/api/v1/gallery", async(params: Response, body: Request) => {
+            const fields: string[] = ["company_id"];
+            const { company_id } = body.body;
+            const galleryRepository = new GalleryRepositoryPrisma(prisma);
 
             const required: string[] = RequiredFields.validate(fields, body.body);
             if(required.length > 0){
@@ -35,51 +32,17 @@ export default class PropertyController {
                 }
             }
 
-            const property: Property = await Property.createProperty(
-                id_extern,
-                title,
-                '',
-                category_id,
-                '',
-                0,
-                0,
-                owner_id,
-                company_id,
-                '',
-                '',
-                0,
-                0,
-                '',
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                0,
-                '',
-                user_id,
-            );
-
-            const folder: Folder = await Folder.createFolder(
-                company_id,
-                title
-            );
-            const createdProperty = await propertyRepository.createProperty(property);
-            await folderRepository.createFolder(folder);
-
             return {
-                body: createdProperty,
+                body: await galleryRepository.retrieveGallery(company_id),
                 status: 200
             }
         }, MiddlewareAuth.middlewareAuth);
 
-        httpServer.registerFile("post", "/api/v1/property-image", upload.single("image"), async(params: Response, body: Request) => {
+        httpServer.registerFile("post", "/api/v1/image-gallery", upload.single("image"), async(params: Response, body: Request) => {
             const s3Client = new S3Client({});
-            const fields: string[] = ["company_id", "image", "property_id"];
+            const fields: string[] = ["company_id", "image"];
             const imageFile: any = body.file;
-            const { company_id, property_id } = body.body;
+            const { company_id } = body.body;
             const galleryRepository = new GalleryRepositoryPrisma(prisma);
 
             const required: string[] = RequiredFields.validate(fields, body.body);
@@ -108,11 +71,30 @@ export default class PropertyController {
                 '',
                 imageUrl,
                 '',
-                property_id
             );
 
             return {
                 body: await galleryRepository.uploadImage(image),
+                status: 200
+            }
+        }, MiddlewareAuth.middlewareAuth);
+
+        httpServer.register("put", "/api/v1/image-gallery/:id", async(params: Response | any, body: Request) => {
+            const fields: string[] = ["alt"];
+            const { alt } = body.body;
+            const image_id: string = params.id;
+            const galleryRepository = new GalleryRepositoryPrisma(prisma);
+
+            const required: string[] = RequiredFields.validate(fields, body.body);
+            if(required.length > 0){
+                return {
+                    body: required,
+                    status: 422
+                }
+            }
+
+            return {
+                body: await galleryRepository.updateImageAlt(alt, image_id),
                 status: 200
             }
         }, MiddlewareAuth.middlewareAuth);

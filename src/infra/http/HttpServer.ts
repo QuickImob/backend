@@ -26,6 +26,12 @@ export default class HttpServer {
         this.app[method](path, upload, checkAuth, this.handler(handler))
     }
 
+    registerFiles(method: string, path: string, upload: RequestHandler, handler: Function, checkAuth: Function): void {
+        const storage = multer.memoryStorage();
+        upload = multer({ storage }).array("images");
+        this.app[method](path, upload, checkAuth, this.handler(handler))
+    }
+
     listen(port: number): void {
         this.app.listen(port, () => {
             logger.info(`Example app listening at http://localhost:${port}`)

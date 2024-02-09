@@ -56,6 +56,8 @@ model Company {
   Property                Property[]
   Owner                   Owner[]
   Categories              Categories[]
+  Image                   Image[]
+  Folder                  Folder[]
 }
 
 model Physical_Person_Company {
@@ -108,6 +110,7 @@ model Property {
   Company               Company    @relation(fields: [company_id], references: [id])
   Owner                 Owner      @relation(fields: [owner_id], references: [id])
   Categories            Categories @relation(fields: [category_id], references: [id])
+  Folder                Folder[]
 }
 
 enum User_Type {
@@ -146,4 +149,31 @@ model Categories {
 
   Company  Company    @relation(fields: [company_id], references: [id])
   Property Property[]
+}
+
+model Image {
+  id         String   @id @default(uuid())
+  company_id String
+  thumb      String
+  url        String
+  alt        String
+  folder_id  String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  Company Company @relation(fields: [company_id], references: [id])
+  Folder  Folder? @relation(fields: [folder_id], references: [id])
+}
+
+model Folder {
+  id          String   @id @default(uuid())
+  company_id  String
+  name        String
+  property_id String?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  Company  Company   @relation(fields: [company_id], references: [id])
+  Property Property? @relation(fields: [property_id], references: [id])
+  Image    Image[]
 }
